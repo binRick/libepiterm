@@ -2,16 +2,15 @@
 /**/
 #include "libepiterm/macros.h"
 #include <libepiterm.h>
-
-
+/**/
 #define PTY_CB    0
 #define JUSH      "/usr/local/bin/jush"
 #define BASH      "/bin/bash"
 #define FISH      "/bin/fish"
 #define SH        "/bin/sh"
-
+/**/
 #define SHELL     BASH
-
+/**/
 
 static char * pty_callback(libepiterm_pty_t *pty){
   pty->user_data = strdup("MYDATA");
@@ -28,7 +27,6 @@ static char * pty_callback(libepiterm_pty_t *pty){
           );
   return(NULL);
 }
-
 
 static int io_callback(int from_epiterm, char *read_buffer, size_t read_size,
                        char ** restrict write_buffer, size_t * restrict write_size){

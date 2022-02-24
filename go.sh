@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -eou pipefail
-killall test||true
+killall test || true
 reset
 make clean
 make -j
