@@ -1,43 +1,56 @@
-/**
- * Copyright © 2015  Mattias Andrée (maandree@member.fsf.org)
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- * 
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-#include <libepiterm.h>
-#include "libepiterm/macros.h"
-
 #include <stdio.h>
+/**/
+#include "libepiterm/macros.h"
+#include <libepiterm.h>
 
 
+#define PTY_CB    0
+#define JUSH      "/usr/local/bin/jush"
+#define BASH      "/bin/bash"
+#define FISH      "/bin/fish"
+#define SH        "/bin/sh"
 
-static int io_callback(int from_epiterm, char* read_buffer, size_t read_size,
-		       char** restrict write_buffer, size_t* restrict write_size)
-{
-  *write_buffer = read_buffer;
-  *write_size = read_size;
-  return 0;
-  (void) from_epiterm;
+#define SHELL     BASH
+
+
+static char * pty_callback(libepiterm_pty_t *pty){
+  pty->user_data = strdup("MYDATA");
+  fprintf(stderr,
+          ">hypo? %s "
+          " | "
+          "utempted? %s | master/slave: %d/%d | tty: %s | user_data: %s | pty callback for pid %zu\n",
+          ((pty->is_hypo) == 1 ? "Yes" : "No"),
+          ((pty->utempted) == 1 ? "Yes" : "No"),
+          pty->master, pty->slave,
+          pty->tty,
+          pty->user_data,
+          pty->pid
+          );
+  return(NULL);
 }
 
 
-int main(void)
-{
-  try (libepiterm_121(NULL, NULL, io_callback));
-  return 0;
-  
- fail:
+static int io_callback(int from_epiterm, char *read_buffer, size_t read_size,
+                       char ** restrict write_buffer, size_t * restrict write_size){
+  *write_buffer = read_buffer;
+  *write_size   = read_size;
+  fprintf(stderr, "Read %zu bytes.......\n", read_size);
+  return(0);
+
+  (void)from_epiterm;
+}
+
+
+int main(void){
+  if (PTY_CB == 0) {
+    try(libepiterm_121(SHELL, pty_callback, io_callback));
+  }else{
+    try(libepiterm_121(SHELL, NULL, io_callback));
+  }
+  return(0);
+
+fail:
   perror("libepiterm");
-  return 1;
+  return(1);
 }
 
