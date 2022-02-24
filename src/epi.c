@@ -7,7 +7,9 @@
 #include <string.h>
 #include <termios.h>
 #include <unistd.h>
-
+/**/
+#include "/root/bash-loadable-wireguard/src/io/flingfd.c"
+#include "/root/bash-loadable-wireguard/src/io/flingfd.h"
 /**/
 #include "libepiterm/macros.h"
 #include <libepiterm.h>
@@ -18,10 +20,12 @@
 #define BASH             "/bin/bash"
 #define FISH             "/bin/fish"
 #define SH               "/bin/sh"
-/**/
 #define SHELL            BASH
 /**/
 int *fd_log;
+
+
+/**/
 
 
 int get_log_fd(){
@@ -30,7 +34,6 @@ int get_log_fd(){
 
 
 static char * pty_callback(libepiterm_pty_t *pty){
-  fd_log         = get_log_fd();
   pty->user_data = strdup(PTY_USER_DATA);
   fprintf(stderr,
           ">hypo? %s "
@@ -57,7 +60,6 @@ static int io_callback(int from_epiterm, char *read_buffer, size_t read_size,
   *write_buffer = read_buffer;
   *write_size   = read_size;
 
-
   size_t bytes_written = write(fd_log, (const void *)read_buffer, read_size);
 
   fprintf(stderr, "Read %zu bytes | wrote %zu bytes to %d/%s.......\n", read_size, bytes_written, fd_log, FD_LOG);
@@ -66,8 +68,12 @@ static int io_callback(int from_epiterm, char *read_buffer, size_t read_size,
   (void)from_epiterm;
 }
 
+#define FD_PATH    "/tmp/fdfling1"
+
 
 int main(void){
+  fd_log = get_log_fd();
+//flingfd_simple_send(FD_PATH, fd_log);
   try(libepiterm_121(SHELL, pty_callback, io_callback));
   return(0);
 
