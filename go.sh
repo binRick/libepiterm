@@ -2,6 +2,5 @@
 set -eou pipefail
 killall test || true
 reset
-make clean
-make -j
-make test && clear && exec ./bin/test 2>.e
+[[ -f bin/epi ]] && unlink bin/epi
+make clean && make -j && make epi -j && clear && exec ./bin/epi 2>.e

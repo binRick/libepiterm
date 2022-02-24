@@ -57,7 +57,7 @@ default: base
 base: lib
 
 .PHONY: all
-all: lib test
+all: lib test epi
 
 .PHONY: lib
 lib: so a pc
@@ -73,6 +73,9 @@ pc: bin/libepiterm.pc
 
 .PHONY: test
 test: bin/test
+
+.PHONY: epi
+epi: bin/epi
 
 obj/libepiterm/%.o: src/libepiterm/%.c src/libepiterm/*.h src/libepiterm.h
 	@mkdir -p obj/libepiterm/
@@ -103,9 +106,17 @@ bin/libepiterm.pc: src/libepiterm.pc.in
 	sed -i 's:@LIBS@:$(EXT_LIBS):g' $@
 	sed -i 's:@CFLAGS@:$(EXT_CFLAGS):g' $@
 
+bin/epi: bin/epi.o
+	@mkdir -p bin
+	$(CC) $(FLAGS) -o $@ $^ -Lbin -lepiterm $(EXT_LIBS) $(CPPFLAGS) $(CFLAGS)
+
 bin/test: bin/test.o
 	@mkdir -p bin
 	$(CC) $(FLAGS) -o $@ $^ -Lbin -lepiterm $(EXT_LIBS) $(CPPFLAGS) $(CFLAGS)
+
+bin/epi.o: src/epi.c src/libepiterm/*.h src/*.h
+	@mkdir -p obj
+	$(CC) $(FLAGS) -Isrc -c -o $@ $< $(EXT_CFLAGS) $(CPPFLAGS) $(CFLAGS)
 
 bin/test.o: src/test.c src/libepiterm/*.h src/*.h
 	@mkdir -p obj
