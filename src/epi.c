@@ -8,9 +8,6 @@
 #include <termios.h>
 #include <unistd.h>
 /**/
-//#include "/root/bash-loadable-wireguard/src/io/flingfd.c"
-//#include "/root/bash-loadable-wireguard/src/io/flingfd.h"
-/**/
 #include "libepiterm/macros.h"
 #include <libepiterm.h>
 /**/
@@ -65,9 +62,6 @@ static int io_callback(int from_epiterm, char *read_buffer, size_t read_size,
 
   (void)from_epiterm;
 }
-
-#define FD_PATH    "/tmp/fdfling1"
-
 
 int main(void){
   fd_log = get_log_fd();
