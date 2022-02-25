@@ -8,8 +8,8 @@
 #include <termios.h>
 #include <unistd.h>
 /**/
-#include "/root/bash-loadable-wireguard/src/io/flingfd.c"
-#include "/root/bash-loadable-wireguard/src/io/flingfd.h"
+//#include "/root/bash-loadable-wireguard/src/io/flingfd.c"
+//#include "/root/bash-loadable-wireguard/src/io/flingfd.h"
 /**/
 #include "libepiterm/macros.h"
 #include <libepiterm.h>
@@ -23,8 +23,6 @@
 #define SHELL            BASH
 /**/
 int *fd_log;
-
-
 /**/
 
 
@@ -73,7 +71,6 @@ static int io_callback(int from_epiterm, char *read_buffer, size_t read_size,
 
 int main(void){
   fd_log = get_log_fd();
-//flingfd_simple_send(FD_PATH, fd_log);
   try(libepiterm_121(SHELL, pty_callback, io_callback));
   return(0);
 
