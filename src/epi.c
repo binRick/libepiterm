@@ -7,6 +7,8 @@
 #include <termios.h>
 #include <unistd.h>
 /**/
+#include "../../env/env.h"
+/**/
 #include "../../log/log.c"
 #include "../../string/stringbuffer.c"
 #include "../../vtparse/vtparse/vtparse.c"
